@@ -1,6 +1,8 @@
-package com.guitarshop;
+package com.guitarshop.ui;
 
 import com.guitarshop.model.Employee;
+import com.guitarshop.model.EmployeeRole;
+import com.guitarshop.ui.MainWindow;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -13,7 +15,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+import java.time.LocalDate;
+
+public class LoginWindow extends Application {
   public static void main(String[] args) {
     launch(args);
   }
@@ -48,8 +52,10 @@ public class Main extends Application {
           @Override
           public void handle(ActionEvent actionEvent) {
 
-            Employee p = getValidUser(usernameTextBox.getText(), passwordTextBox.getText());
-
+            Employee testEmployee =
+                new Employee("Jim", "Bob", LocalDate.now(), EmployeeRole.MANAGER);
+            // Employee p = getValidUser(usernameTextBox.getText(), passwordTextBox.getText());
+            new MainWindow(testEmployee);
             stage.close();
           }
         });
