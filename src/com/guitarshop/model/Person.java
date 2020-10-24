@@ -1,39 +1,41 @@
 package com.guitarshop.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-abstract class Person {
-    String firstName;
-    String lastName;
-    LocalDate birthDate;
+abstract class Person implements Serializable {
+  private static final long serialVersionUID = 1L;
+  String firstName;
+  String lastName;
+  LocalDate birthDate;
 
-    public String getFirstName() {
-        return firstName;
-    }
+  public Person(String firstName, String lastName, LocalDate birthDate) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.birthDate = birthDate;
+  }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+  public String getFirstName() {
+    return firstName;
+  }
 
-    public String getLastName() {
-        return lastName;
-    }
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+  public String getLastName() {
+    return lastName;
+  }
 
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
 
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
-    }
+  public LocalDate getBirthDate() {
+    return birthDate;
+  }
 
-    public Person(String firstName, String lastName, LocalDate birthDate) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.birthDate = birthDate;
-    }
+  public void setBirthDate(LocalDate birthDate) {
+    this.birthDate = birthDate;
+  }
 }

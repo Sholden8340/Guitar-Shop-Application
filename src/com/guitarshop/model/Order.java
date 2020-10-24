@@ -1,4 +1,3 @@
 package com.guitarshop.model;
 
-public class Order {
-}
+public class Order {}

@@ -1,12 +1,18 @@
 package com.guitarshop.dao;
 
-abstract class DB {
+import java.util.List;
+
+abstract class DB{
 
   abstract void loadDB();
 
   abstract void writeDB();
 
-  abstract void Add();
+  abstract void add(List<Object> list);
 
-  abstract void Remove();
+  abstract void add(Object item);
+
+  abstract void remove(List<Object> list);
+
+  abstract void remove(Object item);
 }

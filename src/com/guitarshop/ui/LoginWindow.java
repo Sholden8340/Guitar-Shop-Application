@@ -1,8 +1,7 @@
 package com.guitarshop.ui;
 
 import com.guitarshop.model.Employee;
-import com.guitarshop.model.EmployeeRole;
-import com.guitarshop.ui.MainWindow;
+import com.guitarshop.service.EmployeeService;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -15,9 +14,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-import java.time.LocalDate;
-
 public class LoginWindow extends Application {
+  private final EmployeeService employeeDB = new EmployeeService();
+
   public static void main(String[] args) {
     launch(args);
   }
@@ -29,8 +28,6 @@ public class LoginWindow extends Application {
     stage.setTitle("Login");
     stage.setWidth(400);
     stage.setHeight(300);
-    stage.show();
-
     GridPane gridPane = new GridPane();
     gridPane.setHgap(10);
     gridPane.setVgap(10);
@@ -52,11 +49,19 @@ public class LoginWindow extends Application {
           @Override
           public void handle(ActionEvent actionEvent) {
 
-            Employee testEmployee =
-                new Employee("Jim", "Bob", LocalDate.now(), EmployeeRole.MANAGER);
-            // Employee p = getValidUser(usernameTextBox.getText(), passwordTextBox.getText());
-            new MainWindow(testEmployee);
-            stage.close();
+            if (employeeDB.isValidEmployee(usernameTextBox.getText(), passwordTextBox.getText())) {
+              Employee p = employeeDB.getEmployeeByUsername(usernameTextBox.getText());
+
+              System.out.println("Employee in action event");
+              System.out.println(p.toString());
+              new MainWindow(p);
+              stage.close();
+            } else {
+              // Invalid login
+              passwordTextBox.setText("");
+              usernameTextBox.setText("");
+              //throw new In;
+            }
           }
         });
 
@@ -91,15 +96,5 @@ public class LoginWindow extends Application {
         });
 
     visiblePassword.textProperty().bind(passwordFieldProperty);*/
-  }
-
-  private Employee getValidUser(String userName, String userPassword) {
-
-    throw new java.lang.UnsupportedOperationException("Not Implemented yet.");
-  }
-
-  private boolean isValidLogin(Employee e) {
-
-    throw new java.lang.UnsupportedOperationException("Not Implemented yet.");
   }
 }
