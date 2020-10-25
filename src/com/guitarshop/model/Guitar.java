@@ -19,4 +19,8 @@ public class Guitar extends Article implements Serializable {
     super(brand, model, price, stockQuantity);
     this.guitarType = guitarType;
   }
+
+  public String priceToString(){
+    return String.valueOf(getPrice());
+  }
 }

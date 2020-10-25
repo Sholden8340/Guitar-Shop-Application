@@ -31,7 +31,6 @@ public class EmployeeService {
     System.out.println(employeeList.toString());
 
     for (Employee e : employeeList) {
-      System.out.println(e.getUserName() + " " + e.getPassWord());
       if (e.getUserName().toLowerCase().equals(userName.toLowerCase())
           && e.getPassWord().equals(password)) {
         return true;
@@ -42,16 +41,11 @@ public class EmployeeService {
 
   public Employee getEmployeeByUsername(String userName) {
     List<Employee> employeeList = employeeDB.getEmployees();
-    System.out.println("EMPLOYEES");
     for (Employee e : employeeList) {
-      System.out.println(userName + " " + e.getUserName());
-      System.out.println(e.toString());
       if (e.getUserName().toLowerCase().equals(userName.toLowerCase())) {
-        System.out.println("It works");
         return e;
       }
     }
-    System.out.println("It doesn't work");
     return null;
   }
 }

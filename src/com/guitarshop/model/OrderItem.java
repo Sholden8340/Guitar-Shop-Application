@@ -1,6 +1,27 @@
 package com.guitarshop.model;
 
 public class OrderItem {
-  Article article;
-  int quantity;
+  private Guitar guitar;
+  private int quantity;
+
+  public OrderItem(Guitar guitar, int quantity) {
+    this.guitar = guitar;
+    this.quantity = quantity;
+  }
+
+  public Guitar getGuitar() {
+    return guitar;
+  }
+
+  public void setGuitar(Guitar guitar) {
+    this.guitar = guitar;
+  }
+
+  public int getQuantity() {
+    return quantity;
+  }
+
+  public void setQuantity(int quantity) {
+    this.quantity = quantity;
+  }
 }

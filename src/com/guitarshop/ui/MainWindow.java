@@ -4,7 +4,7 @@ import com.guitarshop.model.*;
 import com.guitarshop.service.CustomerService;
 import com.guitarshop.service.EmployeeService;
 import com.guitarshop.service.StockService;
-import javafx.beans.value.ChangeListener;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,6 +19,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -60,6 +61,8 @@ public class MainWindow {
 
   private Scene orderScene() {
     VBox vBox = new VBox();
+    ObservableList<OrderItem> orderObservableList = FXCollections.observableArrayList();
+
     stage.setTitle("Order - Guitar Shop");
 
     Label labelCreateOrder = new Label("Create Order");
@@ -125,7 +128,7 @@ public class MainWindow {
     customerInfoHBox.getChildren().addAll(customerSearch, customerDetails);
 
     Label labelArticles = new Label("Articles");
-    ListView<Article> articleListView = new ListView<>();
+    TableView<OrderItem> tableViewOrderItems = new TableView<>();
     HBox articleHBox = new HBox();
     Button addArticleButton = new Button("Add Article");
     Button removeArticleButton = new Button("Remove Article");
@@ -141,7 +144,7 @@ public class MainWindow {
             labelCreateOrder,
             customerInfoHBox,
             labelArticles,
-            articleListView,
+            tableViewOrderItems,
             articleHBox);
 
     customerSearchButton.setOnAction(
@@ -168,9 +171,58 @@ public class MainWindow {
               }
             }
             MessageWindow customerSearchWindow = new MessageWindow(employee);
-            customerSearchWindow.setCustomerScene(customerList);
+            Customer selectedCustomer = customerSearchWindow.getSelectedCustomer(customerList);
+
+            firstNameCustomer.setText(selectedCustomer.getFirstName());
+            lastNameCustomer.setText(selectedCustomer.getLastName());
+            addressCustomer.setText(selectedCustomer.getStreetAddress());
+            cityCustomer.setText(selectedCustomer.getCity());
+            phoneNumberCustomer.setText(selectedCustomer.getPhoneNumber());
+            emailCustomer.setText(selectedCustomer.getEmailAddress());
           }
         });
+
+    TableColumn<OrderItem, Integer> quantityColumn = new TableColumn<>("Quantity");
+    quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+
+    TableColumn<OrderItem, String> brandColumn = new TableColumn<>("Brand");
+    brandColumn.setCellValueFactory(cellData ->
+            new SimpleStringProperty(cellData.getValue().getGuitar().getBrand()));
+
+    TableColumn<OrderItem, String> modelColumn = new TableColumn<>("Model");
+    modelColumn.setCellValueFactory(
+        cellData ->
+            new SimpleStringProperty(cellData.getValue().getGuitar().getModel()));
+
+    TableColumn<OrderItem, String> typeColumn = new TableColumn<>("Type");
+    typeColumn.setCellValueFactory(cellData ->
+            new SimpleStringProperty(cellData.getValue().getGuitar().getGuitarType().toString()));
+
+    TableColumn<OrderItem, String> priceColumn = new TableColumn<>("Price");
+    priceColumn.setCellValueFactory(
+        cellData -> new SimpleStringProperty(( cellData.getValue().getGuitar().priceToString())));
+
+    tableViewOrderItems
+        .getColumns()
+        .addAll(quantityColumn, brandColumn, modelColumn, typeColumn, priceColumn);
+    tableViewOrderItems.getItems().addAll(orderObservableList);
+
+    addArticleButton.setOnAction(
+        new EventHandler<ActionEvent>() {
+          @Override
+          public void handle(ActionEvent actionEvent) {
+            MessageWindow addArticle = new MessageWindow(employee);
+            orderObservableList.add(addArticle.getSelectedGuitar());
+            tableViewOrderItems.refresh();
+          }
+        });
+
+    cancelOrderButton.setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent actionEvent) {
+        setScene(orderScene());
+      }
+    });
     return new Scene(vBox);
   }
 
@@ -197,7 +249,9 @@ public class MainWindow {
     VBox vBox1 = new VBox(10);
     Label labelStockMaintenance = new Label("Stock Maintenance");
     TableView<Guitar> stockListView = new TableView<>();
-    ObservableList<Guitar> stockObservableList = FXCollections.observableArrayList(stockDB.getAllGuitars());
+    stockListView.setEditable(true);
+    ObservableList<Guitar> stockObservableList =
+        FXCollections.observableArrayList(stockDB.getAllGuitars());
 
     TableColumn<Guitar, String> brandColumn = new TableColumn<>("Brand");
     brandColumn.setCellValueFactory(new PropertyValueFactory<>("brand"));
@@ -214,7 +268,9 @@ public class MainWindow {
     TableColumn<Guitar, Integer> stockQuantityColumn = new TableColumn<>("Amount in Stock");
     stockQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("stockQuantity"));
 
-    stockListView.getColumns().addAll(brandColumn, modelColumn, guitarTypeColumn, priceColumn, stockQuantityColumn);
+    stockListView
+        .getColumns()
+        .addAll(brandColumn, modelColumn, guitarTypeColumn, priceColumn, stockQuantityColumn);
     stockListView.setItems(stockObservableList);
 
     HBox hBoxStockChange = new HBox(10);
@@ -223,21 +279,39 @@ public class MainWindow {
     Button changeStockButton = new Button("Change");
     hBoxStockChange.getChildren().addAll(stockQuantityTextField, changeStockButton);
 
-    stockListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-      @Override
-      public void handle(MouseEvent mouseEvent) {
-        stockQuantityTextField.setText(Integer.toString(stockListView.getSelectionModel().getSelectedItem().getStockQuantity()));
-      }
-    });
+    stockListView.setOnMouseClicked(
+        new EventHandler<MouseEvent>() {
+          @Override
+          public void handle(MouseEvent mouseEvent) {
+            stockQuantityTextField.setText(
+                Integer.toString(
+                    stockListView.getSelectionModel().getSelectedItem().getStockQuantity()));
+          }
+        });
 
-    stockQuantityTextField.setOnAction(new EventHandler<ActionEvent>() {
-      @Override
-      public void handle(ActionEvent actionEvent) {
-        if(stockQuantityTextField.getText().equals(null)){
-          Integer.parseInt(stockQuantityTextField.getText());
-        }
-      }
-    });
+    changeStockButton.setOnAction(
+        new EventHandler<ActionEvent>() {
+          @Override
+          public void handle(ActionEvent actionEvent) {
+            if (!stockQuantityTextField.equals("")) {
+              try {
+                int index = stockListView.getSelectionModel().getSelectedIndex();
+                int quantity = Integer.parseInt(stockQuantityTextField.getText());
+
+                if (stockListView.getSelectionModel().getSelectedItem().getStockQuantity()
+                    > quantity) {
+                  // are you sure you want to decrease stock
+                  // Alert
+                }
+                stockDB.updateStock(index, quantity);
+                stockObservableList.get(index).setStockQuantity(quantity);
+                stockListView.refresh();
+              } catch (Exception e) {
+                e.printStackTrace();
+              }
+            }
+          }
+        });
 
     vBox1.getChildren().addAll(labelStockMaintenance, stockListView, hBoxStockChange);
     vBox.getChildren().addAll(menuBar, vBox1);
@@ -248,7 +322,8 @@ public class MainWindow {
     menuBar = new MenuBar();
     Menu homeMenu = new Menu("Home");
     MenuItem homeMenuItem = new MenuItem("Home");
-    homeMenu.getItems().add(homeMenuItem);
+    MenuItem logOutMenuItem = new MenuItem("Logout");
+    homeMenu.getItems().addAll(homeMenuItem, logOutMenuItem);
 
     Menu salesMenu = new Menu("Sales");
     MenuItem salesOrder = new MenuItem("Order");
@@ -256,6 +331,19 @@ public class MainWindow {
 
     Menu stockMenu = new Menu("Stock");
     MenuItem stockMaintain = new MenuItem("Maintain");
+
+    logOutMenuItem.setOnAction(
+        new EventHandler<ActionEvent>() {
+          @Override
+          public void handle(ActionEvent actionEvent) {
+            try {
+              new LoginWindow().start(new Stage());
+            } catch (Exception e) {
+              e.printStackTrace();
+            }
+            stage.close();
+          }
+        });
 
     homeMenu.setOnAction(
         new EventHandler<ActionEvent>() {

@@ -17,6 +17,7 @@ public class StockDB extends DB implements Serializable {
     try {
       loadDB(guitars, DB_FILE_LOCATION);
     } catch (Exception e) {
+      e.printStackTrace();
     } finally {
       if (guitars.isEmpty() || guitars == null) {
         guitars.add(new Guitar("Fender", "Telecaster", GuitarType.ELECTRIC, 300, 5));
@@ -41,17 +42,30 @@ public class StockDB extends DB implements Serializable {
 
   public void remove(List<Guitar> guitar) {
     remove(guitars, guitar);
+    writeDB(guitars, DB_FILE_LOCATION);
   }
 
   public void remove(Guitar guitar) {
     remove(guitars, guitar);
+    writeDB(guitars, DB_FILE_LOCATION);
   }
 
   public void add(List<Guitar> guitar) {
     add(guitars, guitar);
+    writeDB(guitars, DB_FILE_LOCATION);
   }
 
   public void add(Guitar guitar) {
     add(guitars, guitar);
+    writeDB(guitars, DB_FILE_LOCATION);
+  }
+
+  public void updateStock(int index, int quantity) {
+    try{
+      guitars.get(index).setStockQuantity(quantity);
+    }catch (Exception e){
+      e.printStackTrace();
+    }
+    writeDB(guitars, DB_FILE_LOCATION);
   }
 }

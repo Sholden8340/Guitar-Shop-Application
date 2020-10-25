@@ -35,7 +35,6 @@ public class LoginWindow extends Application {
 
     Label usernameLabel = new Label("Username: ");
     Label passwordLabel = new Label("Password: ");
-    Label visiblePassword = new Label();
 
     TextField usernameTextBox = new TextField();
     usernameTextBox.setPromptText("Username");
@@ -43,7 +42,6 @@ public class LoginWindow extends Application {
     passwordTextBox.setPromptText("Password");
 
     Button loginButton = new Button("Login");
-    // loginButton.setVisible(false);
     loginButton.setOnAction(
         new EventHandler<ActionEvent>() {
           @Override
@@ -51,16 +49,13 @@ public class LoginWindow extends Application {
 
             if (employeeDB.isValidEmployee(usernameTextBox.getText(), passwordTextBox.getText())) {
               Employee p = employeeDB.getEmployeeByUsername(usernameTextBox.getText());
-
-              System.out.println("Employee in action event");
-              System.out.println(p.toString());
               new MainWindow(p);
               stage.close();
             } else {
-              // Invalid login
               passwordTextBox.setText("");
               usernameTextBox.setText("");
-              // throw new In;
+
+              new ErrorWindow("Invalid Login", "Invalid Login");
             }
           }
         });
@@ -77,24 +72,8 @@ public class LoginWindow extends Application {
     gridPane.getChildren().add(passwordTextBox);
     gridPane.getChildren().add(loginButton);
 
-    // VBox vBox = new VBox();
-    // vBox.getChildren().addAll(gridPane, visiblePassword);
-
     Scene loginWindow = new Scene(gridPane);
     stage.setScene(loginWindow);
     stage.show();
-
-    /*    StringProperty passwordFieldProperty = passwordTextBox.textProperty();
-    passwordFieldProperty.addListener(
-        new ChangeListener<String>() {
-          @Override
-          public void changed(
-              ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-
-            loginButton.setVisible(true);
-          }
-        });
-
-    visiblePassword.textProperty().bind(passwordFieldProperty);*/
   }
 }

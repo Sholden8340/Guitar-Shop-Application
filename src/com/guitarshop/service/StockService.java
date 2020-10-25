@@ -27,4 +27,8 @@ public class StockService {
   public List<Guitar> getAllGuitars() {
     return stockDB.getAllGuitars();
   }
+
+  public void updateStock(int index, int quantity){
+    stockDB.updateStock(index, quantity);
+  }
 }

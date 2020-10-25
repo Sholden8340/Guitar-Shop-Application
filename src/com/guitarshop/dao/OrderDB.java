@@ -1,6 +1,5 @@
 package com.guitarshop.dao;
 
-import com.guitarshop.model.Customer;
 import com.guitarshop.model.Order;
 
 import java.io.Serializable;
@@ -13,6 +12,10 @@ public class OrderDB extends DB implements Serializable {
   private static final String DB_FILE_LOCATION = "orderDB.dat";
   private final List<Order> orders = new ArrayList<>();
 
+  public OrderDB() {
+
+  }
+
   public void add(Order o) {
     super.add(orders, o);
   }
@@ -21,11 +24,15 @@ public class OrderDB extends DB implements Serializable {
     super.add(orders, o);
   }
 
-  public void remove(Customer c) {
-    super.remove(orders, c);
+  public void remove(Order o) {
+    super.remove(orders, o);
   }
 
   public void remove(List<Order> o) {
     super.remove(orders, o);
+  }
+
+  public List<Order> getOrders() {
+    return orders;
   }
 }
