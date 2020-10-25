@@ -19,7 +19,7 @@ public class StockDB extends DB implements Serializable {
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
-      if (guitars.isEmpty() || guitars == null) {
+      if (guitars.isEmpty()) {
         guitars.add(new Guitar("Fender", "Telecaster", GuitarType.ELECTRIC, 300, 5));
         guitars.add(new Guitar("Fender", "Stratocaster", GuitarType.ELECTRIC, 350, 8));
         guitars.add(new Guitar("Gibson", "Les Paul", GuitarType.ELECTRIC, 600, 2));
@@ -67,5 +67,9 @@ public class StockDB extends DB implements Serializable {
       e.printStackTrace();
     }
     writeDB(guitars, DB_FILE_LOCATION);
+  }
+
+  public int getIndex(Guitar g) {
+    return guitars.indexOf(g);
   }
 }

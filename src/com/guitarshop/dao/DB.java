@@ -9,7 +9,7 @@ abstract class DB<T> implements Serializable{
   private static final long serialVersionUID = 1L;
   //protected List<T> db = new ArrayList<>();
 
-  protected void loadDB(List<T> db, String dbLocation) {
+  protected void loadDB(List<T> db, String dbLocation) throws Exception {
     try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(new File(dbLocation)))) {
       while (true) {
         try {
@@ -21,10 +21,13 @@ abstract class DB<T> implements Serializable{
       }
     } catch (FileNotFoundException fnfe) {
       fnfe.printStackTrace();
+      throw new Exception("File not found");
     } catch (ClassNotFoundException cnfe) {
       cnfe.printStackTrace();
+      throw new Exception("Class Not Found");
     } catch (IOException ie) {
       ie.printStackTrace();
+      throw new Exception("IO Exception");
     }
   }
 

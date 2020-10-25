@@ -16,15 +16,18 @@ public class EmployeeDB extends DB implements Serializable {
   private final List<Employee> employees = new ArrayList<>();
 
   public EmployeeDB() {
-    loadDB(employees, DB_FILE_LOCATION);
-
-    if (employees.isEmpty()) {
-      employees.add(new Employee("Jim", "Bob", LocalDate.now(), EmployeeRole.MANAGER));
-      employees.add(new Employee("Lewis", "Light", LocalDate.now(), EmployeeRole.MANAGER));
-      employees.add(new Employee("Stan", "Standardson", LocalDate.now(), EmployeeRole.SALES));
-      employees.add(new Employee("Claire", "Murphy", LocalDate.now(), EmployeeRole.SALES));
-      employees.add(new Employee("Amy", "West", LocalDate.now(), EmployeeRole.SALES));
-      writeDB(employees, DB_FILE_LOCATION);
+    try {
+      loadDB(employees, DB_FILE_LOCATION);
+    } catch (Exception e) {
+      e.printStackTrace();
+      if (employees.isEmpty()) {
+        employees.add(new Employee("Jim", "Bob", LocalDate.now(), EmployeeRole.MANAGER));
+        employees.add(new Employee("Lewis", "Light", LocalDate.now(), EmployeeRole.MANAGER));
+        employees.add(new Employee("Stan", "Standardson", LocalDate.now(), EmployeeRole.SALES));
+        employees.add(new Employee("Claire", "Murphy", LocalDate.now(), EmployeeRole.SALES));
+        employees.add(new Employee("Amy", "West", LocalDate.now(), EmployeeRole.SALES));
+        writeDB(employees, DB_FILE_LOCATION);
+      }
     }
   }
 

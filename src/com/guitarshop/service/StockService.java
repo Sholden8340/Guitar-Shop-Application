@@ -2,6 +2,8 @@ package com.guitarshop.service;
 
 import com.guitarshop.dao.StockDB;
 import com.guitarshop.model.Guitar;
+import com.guitarshop.model.Order;
+import com.guitarshop.model.OrderItem;
 
 import java.util.List;
 
@@ -28,7 +30,20 @@ public class StockService {
     return stockDB.getAllGuitars();
   }
 
-  public void updateStock(int index, int quantity){
+  public void updateStock(int index, int quantity) {
     stockDB.updateStock(index, quantity);
+  }
+
+  public void updateStock(Order newOrder) {
+
+    for (OrderItem o : newOrder.getOrderItems()) {
+      int quantity = o.getQuantity();
+      quantity = -quantity;
+      updateStock(getIndex(o.getGuitar()), quantity);
+    }
+  }
+
+  private int getIndex(Guitar g) {
+    return stockDB.getIndex(g);
   }
 }

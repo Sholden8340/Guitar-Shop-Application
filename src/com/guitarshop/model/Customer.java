@@ -1,8 +1,10 @@
 package com.guitarshop.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Customer extends Person {
+public class Customer extends Person implements Serializable {
+  private static final long serialVersionUID = 1L;
   private String streetAddress;
   private String emailAddress;
   private String city;

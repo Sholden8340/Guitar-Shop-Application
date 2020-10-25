@@ -25,8 +25,7 @@ public class MessageWindow {
   private Stage stage;
   private Employee employee;
   private Customer customer;
-  private Guitar guitar;
-  private int guitarQuantity;
+  private OrderItem guitar;
 
   public MessageWindow(Employee employee) {
     this.stage = new Stage();
@@ -113,7 +112,7 @@ public class MessageWindow {
     stockListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent mouseEvent) {
-        guitar = stockListView.getSelectionModel().getSelectedItem();
+        guitar = new OrderItem(stockListView.getSelectionModel().getSelectedItem(), 0);
       }
     });
 
@@ -135,11 +134,11 @@ public class MessageWindow {
           public void handle(ActionEvent actionEvent) {
             try{
               int quantity = Integer.parseInt(articleQuantityTextField.getText());
-              if(quantity > guitar.getStockQuantity()){
+              if(quantity > guitar.getGuitar().getStockQuantity()){
                 notEnoughStock.setVisible(true);
               }
               else{
-                guitarQuantity = quantity;
+                guitar.setQuantity(quantity);
                 stage.close();
               }
             }catch (Exception e){
@@ -168,6 +167,9 @@ public class MessageWindow {
   public OrderItem getSelectedGuitar(){
     stage.setScene(articleSearch());
     stage.showAndWait();
-    return new OrderItem(guitar, guitarQuantity);
+    System.out.println(guitar.toString());
+    System.out.println(guitar.getGuitar().getBrand());
+    System.out.println(guitar.getQuantity());
+    return guitar;
   }
 }

@@ -1,9 +1,11 @@
 package com.guitarshop.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Order {
+public class Order implements Serializable {
+  private static final long serialVersionUID = 1L;
   private Customer customer;
   private List<OrderItem> orderItems = new ArrayList<>();
 

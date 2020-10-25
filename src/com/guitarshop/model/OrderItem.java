@@ -1,8 +1,11 @@
 package com.guitarshop.model;
 
-public class OrderItem {
+import java.io.Serializable;
+
+public class OrderItem implements Serializable {
   private Guitar guitar;
   private int quantity;
+  private static final long serialVersionUID = 1L;
 
   public OrderItem(Guitar guitar, int quantity) {
     this.guitar = guitar;
