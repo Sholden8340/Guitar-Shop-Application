@@ -7,7 +7,7 @@ import java.util.List;
 
 public class OrderService {
 
-  private OrderDB orderDB = new OrderDB();
+  private final OrderDB orderDB = new OrderDB();
 
   public void add(Order order) {
     orderDB.add(order);

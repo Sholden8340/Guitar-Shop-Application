@@ -22,8 +22,8 @@ import java.util.List;
 
 public class MessageWindow {
 
-  private Stage stage;
-  private Employee employee;
+  private final Stage stage;
+  private final Employee employee;
   private Customer customer;
   private OrderItem guitar;
 
@@ -109,12 +109,13 @@ public class MessageWindow {
         .addAll(brandColumn, modelColumn, guitarTypeColumn, priceColumn, stockQuantityColumn);
     stockListView.setItems(stockObservableList);
 
-    stockListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-      @Override
-      public void handle(MouseEvent mouseEvent) {
-        guitar = new OrderItem(stockListView.getSelectionModel().getSelectedItem(), 0);
-      }
-    });
+    stockListView.setOnMouseClicked(
+        new EventHandler<MouseEvent>() {
+          @Override
+          public void handle(MouseEvent mouseEvent) {
+            guitar = new OrderItem(stockListView.getSelectionModel().getSelectedItem(), 0);
+          }
+        });
 
     Label notEnoughStock = new Label("Not enough items in stock");
     notEnoughStock.setVisible(false);
@@ -132,16 +133,15 @@ public class MessageWindow {
         new EventHandler<ActionEvent>() {
           @Override
           public void handle(ActionEvent actionEvent) {
-            try{
+            try {
               int quantity = Integer.parseInt(articleQuantityTextField.getText());
-              if(quantity > guitar.getGuitar().getStockQuantity()){
+              if (quantity > guitar.getGuitar().getStockQuantity()) {
                 notEnoughStock.setVisible(true);
-              }
-              else{
+              } else {
                 guitar.setQuantity(quantity);
                 stage.close();
               }
-            }catch (Exception e){
+            } catch (Exception e) {
               e.printStackTrace();
             }
           }
@@ -164,7 +164,7 @@ public class MessageWindow {
     return customer;
   }
 
-  public OrderItem getSelectedGuitar(){
+  public OrderItem getSelectedGuitar() {
     stage.setScene(articleSearch());
     stage.showAndWait();
     System.out.println(guitar.toString());

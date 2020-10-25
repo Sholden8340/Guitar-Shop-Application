@@ -7,7 +7,7 @@ import java.util.List;
 public class Order implements Serializable {
   private static final long serialVersionUID = 1L;
   private Customer customer;
-  private List<OrderItem> orderItems = new ArrayList<>();
+  private final List<OrderItem> orderItems = new ArrayList<>();
 
   public Order(Customer customer) {
     this.customer = customer;

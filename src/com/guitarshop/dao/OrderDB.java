@@ -18,7 +18,8 @@ public class OrderDB extends DB implements Serializable {
       loadDB(orders, DB_FILE_LOCATION);
     } catch (Exception e) {
       e.printStackTrace();
-      Customer customer = new Customer(
+      Customer customer =
+          new Customer(
               "Irina",
               "Schapendonk",
               LocalDate.now(),
@@ -28,9 +29,10 @@ public class OrderDB extends DB implements Serializable {
               "Irina.Schapendonk@mail.com");
 
       Order order = new Order(customer);
-      order.addOrderItem(new OrderItem(new Guitar("Martin", "D-28", GuitarType.ACOUSTIC, 350, 4), 2));
+      order.addOrderItem(
+          new OrderItem(new Guitar("Martin", "D-28", GuitarType.ACOUSTIC, 350, 4), 2));
       orders.add(order);
-    }finally{
+    } finally {
       writeDB(orders, DB_FILE_LOCATION);
     }
   }

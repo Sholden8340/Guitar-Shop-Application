@@ -5,9 +5,15 @@ import javafx.scene.control.ButtonType;
 
 public class ErrorWindow {
 
-  public ErrorWindow(String message, String title) {
+  public ErrorWindow(String message, String title, boolean isConfirmation) {
 
-    Alert alert = new Alert(Alert.AlertType.WARNING);
+    Alert alert;
+    if (isConfirmation) {
+      alert = new Alert(Alert.AlertType.INFORMATION);
+    } else {
+      alert = new Alert(Alert.AlertType.WARNING);
+    }
+
     alert.setTitle(title);
     alert.setHeaderText(message);
     alert.setContentText("");

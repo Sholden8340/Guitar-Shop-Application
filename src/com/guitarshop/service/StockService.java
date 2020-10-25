@@ -8,7 +8,7 @@ import com.guitarshop.model.OrderItem;
 import java.util.List;
 
 public class StockService {
-  private StockDB stockDB = new StockDB();
+  private final StockDB stockDB = new StockDB();
 
   public void add(Guitar guitar) {
     stockDB.add(guitar);

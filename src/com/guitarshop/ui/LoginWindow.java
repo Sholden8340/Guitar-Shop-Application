@@ -55,7 +55,7 @@ public class LoginWindow extends Application {
               passwordTextBox.setText("");
               usernameTextBox.setText("");
 
-              new ErrorWindow("Invalid Login", "Invalid Login");
+              new ErrorWindow("Invalid Login", "Invalid Login", false);
             }
           }
         });

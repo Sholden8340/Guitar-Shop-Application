@@ -1,13 +1,12 @@
 package com.guitarshop.dao;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 
-abstract class DB<T> implements Serializable{
+abstract class DB<T> implements Serializable {
 
   private static final long serialVersionUID = 1L;
-  //protected List<T> db = new ArrayList<>();
+  // protected List<T> db = new ArrayList<>();
 
   protected void loadDB(List<T> db, String dbLocation) throws Exception {
     try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(new File(dbLocation)))) {
@@ -56,6 +55,7 @@ abstract class DB<T> implements Serializable{
     db.removeAll(removeItems);
   }
 
-  protected void remove(List<T> db, T item) { db.remove(item); }
-
+  protected void remove(List<T> db, T item) {
+    db.remove(item);
+  }
 }

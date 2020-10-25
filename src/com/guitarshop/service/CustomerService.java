@@ -6,7 +6,7 @@ import com.guitarshop.model.Customer;
 import java.util.List;
 
 public class CustomerService {
-  private CustomerDB customerDb = new CustomerDB();
+  private final CustomerDB customerDb = new CustomerDB();
 
   public void add(Customer customer) {
     customerDb.add(customer);
@@ -24,7 +24,7 @@ public class CustomerService {
     customerDb.remove(customers);
   }
 
-  public List<Customer> getAllCustomers(){
+  public List<Customer> getAllCustomers() {
     return customerDb.getAllCustomers();
   }
 }

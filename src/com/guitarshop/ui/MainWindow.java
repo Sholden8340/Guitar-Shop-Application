@@ -6,7 +6,6 @@ import com.guitarshop.service.EmployeeService;
 import com.guitarshop.service.OrderService;
 import com.guitarshop.service.StockService;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,7 +19,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -187,26 +185,25 @@ public class MainWindow {
     quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
 
     TableColumn<OrderItem, String> brandColumn = new TableColumn<>("Brand");
-    brandColumn.setCellValueFactory(cellData ->
-            new SimpleStringProperty(cellData.getValue().getGuitar().getBrand()));
+    brandColumn.setCellValueFactory(
+        cellData -> new SimpleStringProperty(cellData.getValue().getGuitar().getBrand()));
 
     TableColumn<OrderItem, String> modelColumn = new TableColumn<>("Model");
-    modelColumn.setCellValueFactory(cellData ->
-            new SimpleStringProperty(cellData.getValue().getGuitar().getModel()));
+    modelColumn.setCellValueFactory(
+        cellData -> new SimpleStringProperty(cellData.getValue().getGuitar().getModel()));
 
     TableColumn<OrderItem, String> typeColumn = new TableColumn<>("Type");
-    typeColumn.setCellValueFactory(cellData ->
+    typeColumn.setCellValueFactory(
+        cellData ->
             new SimpleStringProperty(cellData.getValue().getGuitar().getGuitarType().toString()));
 
     TableColumn<OrderItem, String> priceColumn = new TableColumn<>("Price");
-    priceColumn.setCellValueFactory(cellData ->
-            new SimpleStringProperty(( cellData.getValue().getGuitar().priceToString())));
+    priceColumn.setCellValueFactory(
+        cellData -> new SimpleStringProperty((cellData.getValue().getGuitar().priceToString())));
 
     tableViewOrderItems
         .getColumns()
         .addAll(quantityColumn, brandColumn, modelColumn, typeColumn, priceColumn);
-
-
 
     addArticleButton.setOnAction(
         new EventHandler<ActionEvent>() {
@@ -219,55 +216,57 @@ public class MainWindow {
           }
         });
 
-    cancelOrderButton.setOnAction(new EventHandler<ActionEvent>() {
-      @Override
-      public void handle(ActionEvent actionEvent) {
-        setScene(orderScene());
-      }
-    });
-
-    tableViewOrderItems.setOnMouseClicked(new EventHandler<MouseEvent>() {
-      @Override
-      public void handle(MouseEvent mouseEvent) {
-
-      }
-    });
-
-    removeArticleButton.setOnAction(new EventHandler<ActionEvent>() {
-      @Override
-      public void handle(ActionEvent actionEvent) {
-        if(tableViewOrderItems.getSelectionModel().getSelectedItem() != null){
-          orderObservableList.remove(tableViewOrderItems.getSelectionModel().getSelectedItem());
-        }
-      }
-    });
-
-    confirmOrderButton.setOnAction(new EventHandler<ActionEvent>() {
-      @Override
-      public void handle(ActionEvent actionEvent) {
-
-        StockService stockService = new StockService();
-        OrderService orderService = new OrderService();
-        if(tableViewOrderItems.getItems().isEmpty()){
-          new ErrorWindow("You must select at least 1 item", "Choose An Item");
-          return;
-        }else if(selectedCustomer[0] == null){
-
-          new ErrorWindow("You must select a customer", "Choose A Customer");
-          return;
-        }else{
-          Order newOrder = new Order(selectedCustomer[0]);
-          for (OrderItem o : tableViewOrderItems.getItems()) {
-            newOrder.addOrderItem(o);
+    cancelOrderButton.setOnAction(
+        new EventHandler<ActionEvent>() {
+          @Override
+          public void handle(ActionEvent actionEvent) {
+            setScene(orderScene());
           }
+        });
 
-          orderService.add(newOrder);
-          stockService.updateStock(newOrder);
-        }
+    tableViewOrderItems.setOnMouseClicked(
+        new EventHandler<MouseEvent>() {
+          @Override
+          public void handle(MouseEvent mouseEvent) {}
+        });
 
-      }
-    });
+    removeArticleButton.setOnAction(
+        new EventHandler<ActionEvent>() {
+          @Override
+          public void handle(ActionEvent actionEvent) {
+            if (tableViewOrderItems.getSelectionModel().getSelectedItem() != null) {
+              orderObservableList.remove(tableViewOrderItems.getSelectionModel().getSelectedItem());
+            }
+          }
+        });
 
+    confirmOrderButton.setOnAction(
+        new EventHandler<ActionEvent>() {
+          @Override
+          public void handle(ActionEvent actionEvent) {
+
+            StockService stockService = new StockService();
+            OrderService orderService = new OrderService();
+            if (tableViewOrderItems.getItems().isEmpty()) {
+              new ErrorWindow("You must select at least 1 item", "Choose An Item", false);
+              return;
+            } else if (selectedCustomer[0] == null) {
+
+              new ErrorWindow("You must select a customer", "Choose A Customer", false);
+              return;
+            } else {
+              Order newOrder = new Order(selectedCustomer[0]);
+              for (OrderItem o : tableViewOrderItems.getItems()) {
+                newOrder.addOrderItem(o);
+              }
+
+              orderService.add(newOrder);
+              stockService.updateStock(newOrder); // Doesn't work
+
+              new ErrorWindow("Your order has been confirmed!", "Order Confirmed", true);
+            }
+          }
+        });
 
     return new Scene(vBox);
   }
@@ -277,7 +276,8 @@ public class MainWindow {
     stage.setTitle("Order List - Guitar Shop");
 
     OrderService orderService = new OrderService();
-    ObservableList<Order> obersvableOrderList = FXCollections.observableArrayList(orderService.getAllOrders());
+    ObservableList<Order> obersvableOrderList =
+        FXCollections.observableArrayList(orderService.getAllOrders());
 
     ObservableList<OrderItem> obersvableOrderDetailsList = FXCollections.observableArrayList();
 
@@ -285,22 +285,28 @@ public class MainWindow {
     TableView<Order> orderTableView = new TableView<>();
 
     TableColumn<Order, String> customerColumn = new TableColumn<>("Customer Name");
-    customerColumn.setCellValueFactory(cellData ->
-            new SimpleStringProperty(cellData.getValue().getCustomer().getFirstName() + " " +cellData.getValue().getCustomer().getLastName()));
+    customerColumn.setCellValueFactory(
+        cellData ->
+            new SimpleStringProperty(
+                cellData.getValue().getCustomer().getFirstName()
+                    + " "
+                    + cellData.getValue().getCustomer().getLastName()));
 
     TableColumn<Order, String> cityColumn = new TableColumn<>("City");
-    cityColumn.setCellValueFactory(cellData ->
-            new SimpleStringProperty(cellData.getValue().getCustomer().getCity()));
+    cityColumn.setCellValueFactory(
+        cellData -> new SimpleStringProperty(cellData.getValue().getCustomer().getCity()));
 
     TableColumn<Order, String> phoneNumberColumn = new TableColumn<>("Phone Number");
-    phoneNumberColumn.setCellValueFactory(cellData ->
-            new SimpleStringProperty(cellData.getValue().getCustomer().getPhoneNumber()));
+    phoneNumberColumn.setCellValueFactory(
+        cellData -> new SimpleStringProperty(cellData.getValue().getCustomer().getPhoneNumber()));
 
     TableColumn<Order, String> emailAddressColumn = new TableColumn<>("Email Address");
-    emailAddressColumn.setCellValueFactory(cellData ->
-            new SimpleStringProperty(cellData.getValue().getCustomer().getEmailAddress()));
+    emailAddressColumn.setCellValueFactory(
+        cellData -> new SimpleStringProperty(cellData.getValue().getCustomer().getEmailAddress()));
 
-    orderTableView.getColumns().addAll(customerColumn,cityColumn,phoneNumberColumn,emailAddressColumn);
+    orderTableView
+        .getColumns()
+        .addAll(customerColumn, cityColumn, phoneNumberColumn, emailAddressColumn);
     orderTableView.getItems().addAll(obersvableOrderList);
 
     Label labelOrderDetails = new Label("Order Details");
@@ -310,42 +316,42 @@ public class MainWindow {
     quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
 
     TableColumn<OrderItem, String> brandColumn = new TableColumn<>("Brand");
-    brandColumn.setCellValueFactory(cellData ->
-            new SimpleStringProperty(cellData.getValue().getGuitar().getBrand()));
+    brandColumn.setCellValueFactory(
+        cellData -> new SimpleStringProperty(cellData.getValue().getGuitar().getBrand()));
 
     TableColumn<OrderItem, String> modelColumn = new TableColumn<>("Model");
-    modelColumn.setCellValueFactory(cellData ->
-            new SimpleStringProperty(cellData.getValue().getGuitar().getModel()));
+    modelColumn.setCellValueFactory(
+        cellData -> new SimpleStringProperty(cellData.getValue().getGuitar().getModel()));
 
     TableColumn<OrderItem, String> typeColumn = new TableColumn<>("Type");
-    typeColumn.setCellValueFactory(cellData ->
+    typeColumn.setCellValueFactory(
+        cellData ->
             new SimpleStringProperty(cellData.getValue().getGuitar().getGuitarType().toString()));
 
     TableColumn<OrderItem, String> priceColumn = new TableColumn<>("Price");
-    priceColumn.setCellValueFactory(cellData ->
-            new SimpleStringProperty(( cellData.getValue().getGuitar().priceToString())));
+    priceColumn.setCellValueFactory(
+        cellData -> new SimpleStringProperty((cellData.getValue().getGuitar().priceToString())));
 
     orderDetailsTableView
-            .getColumns()
-            .addAll(quantityColumn, brandColumn, modelColumn, typeColumn, priceColumn);
+        .getColumns()
+        .addAll(quantityColumn, brandColumn, modelColumn, typeColumn, priceColumn);
 
+    orderTableView.setOnMouseClicked(
+        new EventHandler<MouseEvent>() {
+          @Override
+          public void handle(MouseEvent mouseEvent) {
 
-    orderTableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-      @Override
-      public void handle(MouseEvent mouseEvent) {
-
-        if (orderTableView.getSelectionModel().getSelectedItem() != null){
-          obersvableOrderDetailsList.clear();
-          for (OrderItem oi : orderTableView.getSelectionModel().getSelectedItem().getOrderItems()) {
-            obersvableOrderDetailsList.add(oi);
+            if (orderTableView.getSelectionModel().getSelectedItem() != null) {
+              obersvableOrderDetailsList.clear();
+              for (OrderItem oi :
+                  orderTableView.getSelectionModel().getSelectedItem().getOrderItems()) {
+                obersvableOrderDetailsList.add(oi);
+              }
+              orderDetailsTableView.getItems().clear();
+              orderDetailsTableView.getItems().addAll(obersvableOrderDetailsList);
+            }
           }
-          orderDetailsTableView.getItems().clear();
-          orderDetailsTableView.getItems().addAll(obersvableOrderDetailsList);
-        }
-      }
-    });
-
-
+        });
 
     vBox.getChildren()
         .addAll(menuBar, labelOrderList, orderTableView, labelOrderDetails, orderDetailsTableView);

@@ -35,7 +35,9 @@ public class EmployeeDB extends DB implements Serializable {
     return employees;
   }
 
-  public void add(Employee e) { super.add(employees, e); }
+  public void add(Employee e) {
+    super.add(employees, e);
+  }
 
   public void add(List e) {
     super.add(employees, e);

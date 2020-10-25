@@ -61,9 +61,9 @@ public class StockDB extends DB implements Serializable {
   }
 
   public void updateStock(int index, int quantity) {
-    try{
+    try {
       guitars.get(index).setStockQuantity(quantity);
-    }catch (Exception e){
+    } catch (Exception e) {
       e.printStackTrace();
     }
     writeDB(guitars, DB_FILE_LOCATION);
