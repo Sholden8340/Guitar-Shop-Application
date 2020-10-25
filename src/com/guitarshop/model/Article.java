@@ -1,6 +1,9 @@
 package com.guitarshop.model;
 
-public class Article {
+import java.io.Serializable;
+
+public class Article implements Serializable {
+  private static final long serialVersionUID = 1L;
   private String brand;
   private String model;
   private double price;

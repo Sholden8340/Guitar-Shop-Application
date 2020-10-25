@@ -1,15 +1,20 @@
 package com.guitarshop.ui;
 
-import com.guitarshop.model.Article;
-import com.guitarshop.model.Employee;
-import com.guitarshop.model.Order;
-import com.guitarshop.model.OrderItem;
+import com.guitarshop.model.*;
+import com.guitarshop.service.CustomerService;
 import com.guitarshop.service.EmployeeService;
+import com.guitarshop.service.StockService;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -17,12 +22,14 @@ import javafx.stage.Stage;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainWindow {
   private final Stage stage;
+  private final Employee employee;
   EmployeeService employeeDB = new EmployeeService();
   private MenuBar menuBar;
-  private final Employee employee;
 
   public MainWindow(Employee employee) {
     this.stage = new Stage();
@@ -39,9 +46,8 @@ public class MainWindow {
     Scene home = new Scene(vBox);
     stage.setTitle("Home - Guitar Shop");
 
-
-
-    Label welcome = new Label(String.format("Welcome %s %s", employee.getFirstName(), employee.getLastName()));
+    Label welcome =
+        new Label(String.format("Welcome %s %s", employee.getFirstName(), employee.getLastName()));
     Label role = new Label(employee.getRole().toString());
 
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyy HH:mm");
@@ -137,6 +143,34 @@ public class MainWindow {
             labelArticles,
             articleListView,
             articleHBox);
+
+    customerSearchButton.setOnAction(
+        new EventHandler<ActionEvent>() {
+          @Override
+          public void handle(ActionEvent actionEvent) {
+            List<Customer> customerList = new ArrayList<>();
+            CustomerService customerDB = new CustomerService();
+            String query = customerSearchTextField.getText();
+
+            for (Customer c : customerDB.getAllCustomers()) {
+              if (c.getFirstName().contains(query)) {
+                customerList.add(c);
+              } else if (c.getLastName().contains(query)) {
+                customerList.add(c);
+              } else if (c.getPhoneNumber().contains(query)) {
+                customerList.add(c);
+              } else if (c.getStreetAddress().contains(query)) {
+                customerList.add(c);
+              } else if (c.getCity().contains(query)) {
+                customerList.add(c);
+              } else if (c.getEmailAddress().contains(query)) {
+                customerList.add(c);
+              }
+            }
+            MessageWindow customerSearchWindow = new MessageWindow(employee);
+            customerSearchWindow.setCustomerScene(customerList);
+          }
+        });
     return new Scene(vBox);
   }
 
@@ -149,7 +183,6 @@ public class MainWindow {
 
     Label labelOrderDetails = new Label("Order Details");
     ListView<OrderItem> orderDetailsView = new ListView<>();
-
     vBox.getChildren()
         .addAll(menuBar, labelOrderList, orderListView, labelOrderDetails, orderDetailsView);
 
@@ -160,20 +193,54 @@ public class MainWindow {
     VBox vBox = new VBox();
     stage.setTitle("Stock Maintenance - Guitar Shop");
 
+    StockService stockDB = new StockService();
     VBox vBox1 = new VBox(10);
     Label labelStockMaintenance = new Label("Stock Maintenance");
-    ListView<Article> stockListView = new ListView<>();
+    TableView<Guitar> stockListView = new TableView<>();
+    ObservableList<Guitar> stockObservableList = FXCollections.observableArrayList(stockDB.getAllGuitars());
+
+    TableColumn<Guitar, String> brandColumn = new TableColumn<>("Brand");
+    brandColumn.setCellValueFactory(new PropertyValueFactory<>("brand"));
+
+    TableColumn<Guitar, String> modelColumn = new TableColumn<>("Model");
+    modelColumn.setCellValueFactory(new PropertyValueFactory<>("model"));
+
+    TableColumn<Guitar, String> guitarTypeColumn = new TableColumn<>("Type");
+    guitarTypeColumn.setCellValueFactory(new PropertyValueFactory<>("guitarType"));
+
+    TableColumn<Guitar, Double> priceColumn = new TableColumn<>("Price");
+    priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+    TableColumn<Guitar, Integer> stockQuantityColumn = new TableColumn<>("Amount in Stock");
+    stockQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("stockQuantity"));
+
+    stockListView.getColumns().addAll(brandColumn, modelColumn, guitarTypeColumn, priceColumn, stockQuantityColumn);
+    stockListView.setItems(stockObservableList);
 
     HBox hBoxStockChange = new HBox(10);
     TextField stockQuantityTextField = new TextField();
     stockQuantityTextField.setPromptText("Quantity");
     Button changeStockButton = new Button("Change");
-
     hBoxStockChange.getChildren().addAll(stockQuantityTextField, changeStockButton);
+
+    stockListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent mouseEvent) {
+        stockQuantityTextField.setText(Integer.toString(stockListView.getSelectionModel().getSelectedItem().getStockQuantity()));
+      }
+    });
+
+    stockQuantityTextField.setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent actionEvent) {
+        if(stockQuantityTextField.getText().equals(null)){
+          Integer.parseInt(stockQuantityTextField.getText());
+        }
+      }
+    });
 
     vBox1.getChildren().addAll(labelStockMaintenance, stockListView, hBoxStockChange);
     vBox.getChildren().addAll(menuBar, vBox1);
-
     return new Scene(vBox);
   }
 

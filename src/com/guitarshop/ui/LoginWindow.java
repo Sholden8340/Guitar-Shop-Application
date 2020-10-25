@@ -60,7 +60,7 @@ public class LoginWindow extends Application {
               // Invalid login
               passwordTextBox.setText("");
               usernameTextBox.setText("");
-              //throw new In;
+              // throw new In;
             }
           }
         });
