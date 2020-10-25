@@ -27,8 +27,8 @@ public class EmployeeService {
   public boolean isValidEmployee(String userName, String password) {
     List<Employee> employeeList = employeeDB.getEmployees();
 
-    System.out.println(userName + " " + password);
-    System.out.println(employeeList.toString());
+    //System.out.println(userName + " " + password);
+    //System.out.println(employeeList.toString());
 
     for (Employee e : employeeList) {
       if (e.getUserName().toLowerCase().equals(userName.toLowerCase())

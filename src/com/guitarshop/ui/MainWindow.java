@@ -211,6 +211,8 @@ public class MainWindow {
           public void handle(ActionEvent actionEvent) {
             MessageWindow addArticle = new MessageWindow(employee);
             orderObservableList.add(addArticle.getSelectedGuitar());
+            //System.out.println(orderObservableList.get(orderObservableList.size() - 1).toString());
+
             tableViewOrderItems.getItems().clear();
             tableViewOrderItems.getItems().addAll(orderObservableList);
           }

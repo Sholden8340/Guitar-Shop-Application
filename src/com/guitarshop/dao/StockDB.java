@@ -61,6 +61,7 @@ public class StockDB extends DB implements Serializable {
   }
 
   public void updateStock(int index, int quantity) {
+
     try {
       guitars.get(index).setStockQuantity(quantity);
     } catch (Exception e) {
@@ -69,7 +70,19 @@ public class StockDB extends DB implements Serializable {
     writeDB(guitars, DB_FILE_LOCATION);
   }
 
+  public void subtractFromStock(int index, int quantity){
+    guitars.get(index).subtractFromStock(quantity);
+    writeDB(guitars, DB_FILE_LOCATION);
+  }
+
   public int getIndex(Guitar g) {
-    return guitars.indexOf(g);
+    for (int i = 0; i < guitars.size(); i++) {
+      if(g.getModel().equals(guitars.get(i).getModel())){
+        if(g.getPrice() ==guitars.get(i).getPrice()){
+          return i;
+        }
+      }
+    }
+    return -1;
   }
 }

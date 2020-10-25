@@ -167,9 +167,9 @@ public class MessageWindow {
   public OrderItem getSelectedGuitar() {
     stage.setScene(articleSearch());
     stage.showAndWait();
-    System.out.println(guitar.toString());
+/*    System.out.println(guitar.toString());
     System.out.println(guitar.getGuitar().getBrand());
-    System.out.println(guitar.getQuantity());
+    System.out.println(guitar.getQuantity());*/
     return guitar;
   }
 }

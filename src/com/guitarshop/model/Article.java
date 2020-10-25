@@ -53,4 +53,8 @@ public class Article implements Serializable {
     }
     this.stockQuantity = stockQuantity;
   }
+
+  public void subtractFromStock(int quantity){
+    this.stockQuantity -= quantity;
+  }
 }

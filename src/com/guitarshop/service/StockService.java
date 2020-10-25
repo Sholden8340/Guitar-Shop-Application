@@ -38,12 +38,11 @@ public class StockService {
 
     for (OrderItem o : newOrder.getOrderItems()) {
       int quantity = o.getQuantity();
-      quantity = -quantity;
-      updateStock(getIndex(o.getGuitar()), quantity);
+      stockDB.subtractFromStock(getIndex(o.getGuitar()), quantity);
     }
   }
 
-  private int getIndex(Guitar g) {
-    return stockDB.getIndex(g);
+  private int getIndex(Guitar guitar) {
+    return stockDB.getIndex(guitar);
   }
 }
